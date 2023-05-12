@@ -1,0 +1,188 @@
+# Note: there are many handy hints in comments in this example -- remove them when you've finalized your recipe
+# If your package is python based, we recommend using Grayskull to generate it instead:
+# https://github.com/conda-incubator/grayskull
+
+# Jinja variables help maintain the recipe as you'll update the version only here.
+# Using the name variable with the URL in line 16 is convenient
+# when copying and pasting from another recipe, but not really needed.
+{% set name = "pyjeo" %}
+{% set version = "1.1.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/ec-jrc/jeolib-pyjeo/archive/refs/tags/v1.1.2.tar.gz
+  # If getting the source from GitHub, remove the line above,
+  # uncomment the line below, and modify as needed. Use releases if available:
+  # url: https://github.com/simplejson/simplejson/releases/download/{{ version }}/simplejson-{{ version }}.tar.gz
+  # and otherwise fall back to archive:
+  # url: https://github.com/simplejson/simplejson/archive/v{{ version }}.tar.gz
+  sha256: 3d15487151698566baf4fa321fd45179dea88bcc8c44d8853d984e4b37b4789b
+  # sha256 is the preferred checksum -- you can get it for a file with:
+  #  `openssl sha256 <file name>`.
+  # You may need the openssl package, available on conda-forge:
+  #  `conda install openssl -c conda-forge``
+
+build:
+  # Uncomment the following line if the package is pure Python and the recipe is exactly the same for all platforms.
+  # It is okay if the dependencies are not built for all platforms/versions, although selectors are still not allowed.
+  # See https://conda-forge.org/docs/maintainer/knowledge_base.html#noarch-python for more details.
+  # noarch: python
+  # If the installation is complex, or different between Unix and Windows, use separate bld.bat and build.sh files instead of this key.
+  # By default, the package will be built for the Python versions supported by conda-forge and for all major OSs.
+  # Add the line "skip: True  # [py<35]" (for example) to limit to Python 3.5 and newer, or "skip: True  # [not win]" to limit to Windows.
+  # More info about selectors can be found in the conda-build docs: 
+  # https://docs.conda.io/projects/conda-build/en/latest/resources/define-metadata.html#preprocessing-selectors
+  skip: True # [not linux]
+  skip: True  # [py<36]
+  # script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+
+requirements:
+  build:
+    # If your project compiles code (such as a C extension) then add the required compilers as separate entries here.
+    # Compilers are named 'c', 'cxx' and 'fortran'.
+    - cmake
+    - pkg-config >=0.21      # [not win]
+    - make                   # [not win]
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - sysroot_linux-64 2.17  # [linux64]
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+    - numpy
+    - curl 
+    - git 
+    - gzip 
+    - tar 
+    - unzip 
+    - make 
+    - cmake 
+    - libtool 
+    - swig 
+    - setuptools 
+    - gdal 
+    - libnetcdf 
+    - proj 
+    - xarray
+    # - build-essential 
+    # - libboost-serialization-dev 
+    # - libpython3-dev 
+    # - libfann2 
+    # - libshp-dev 
+    # - libgdal-dev 
+    # - libboost-filesystem-dev
+    # - sqlite3 
+    # - libgsl0-dev 
+    # - libgeotiff-dev 
+    # - libproj-dev 
+    # - libgsl-dev 
+    # - libfann-dev 
+    # - uthash-dev 
+    # - libjsoncpp-dev 
+    # - zlib1g-dev 
+    # - libfftw3-dev 
+    # - libssl-dev 
+    # - libopenblas-dev 
+    - boost
+    # - fann
+    - fann2
+    # - fftw3 
+    # - libshp
+    - libgdal
+    - libspatialite
+    - geotiff
+    - gsl
+    - proj
+    - sqlite
+    - openssl
+    - zlib
+    # - openblas-devel
+    - jsoncpp 
+    - fftw
+
+
+
+  run:
+    - python
+    - numpy
+    # - sqlite3 
+    # - zlib1g 
+    - libgdal 
+    # - libproj 
+    - geotiff 
+    - gsl 
+    # - fann 
+    - fann2 
+    # - fftw3 
+    # - libssl 
+    # - libshp 
+    # - uthash 
+    - libopenblas 
+    - jsoncpp 
+    - gdal 
+    - libnetcdf 
+    - proj 
+    - xarray
+    - boost
+    # - fann
+    - fann2
+    - libgdal
+    - libspatialite
+    - geotiff
+    - gsl
+    - proj
+    - sqlite
+    - openssl
+    - zlib
+    - fftw
+    # - openblas-devel
+
+test:
+  # Some packages might need a `test/commands` key to check CLI.
+  # List all the packages/modules that `run_test.py` imports.
+  # For python packages, it is useful to run pip check. However, sometimes the
+  # metadata used by pip is out of date. Thus this section is optional if it is
+  # failing.
+  # requires:
+  #   - pip
+  # commands:
+  #   - pip check
+test:
+  imports:
+    - pyjeo
+  commands:
+    - python -W ignore -m unittest -v tests
+
+about:
+  home: https://github.com/ec-jrc/jeolib-pyjeo
+  summary: 'pyjeo is a library for image processing for geospatial data implemented in JRC Ispra'
+  description: |
+    pyjeo is a library for image processing for geospatial data implemented in JRC Ispra.
+    It is Python code with dependencies to C/C++ libraries miallib and jiplib.
+  # Remember to specify the license variants for BSD, Apache, GPL, and LGPL.
+  # Use the SPDX identifier, e.g: GPL-2.0-only instead of GNU General Public License version 2.0
+  # See https://spdx.org/licenses/
+  license: GPLv3
+  # The license_family, i.e. "BSD" if license is "BSD-3-Clause". 
+  # Optional
+  license_family: GPL
+  # It is required to include a license file in the package,
+  # (even if the license doesn't require it) using the license_file entry.
+  # Please also note that some projects have multiple license files which all need to be added using a valid yaml list.
+  # See https://docs.conda.io/projects/conda-build/en/latest/resources/define-metadata.html#license-file
+  license_file: LICENSE.txt
+  # The doc_url and dev_url are optional.
+  doc_url: https://pyjeo.readthedocs.io/
+  dev_url: https://github.com/ec-jrc/jeolib-pyjeo
+
+extra:
+  recipe-maintainers:
+    # GitHub IDs for maintainers of the recipe.
+    # Always check with the people listed below if they are OK becoming maintainers of the recipe. (There will be spam!)
+    - kempenep
