@@ -45,6 +45,8 @@ requirements:
     # If your project compiles code (such as a C extension) then add the required compilers as separate entries here.
     # Compilers are named 'c', 'cxx' and 'fortran'.
     - cmake
+    - compilers
+    - binutils               # [linux]
     - pkg-config >=0.21      # [not win]
     - make                   # [not win]
     - {{ compiler('c') }}
@@ -89,11 +91,13 @@ requirements:
     # - libfftw3-dev 
     # - libssl-dev 
     # - libopenblas-dev 
+    - openblas
     - boost
     # - fann
     - fann2
     # - fftw3 
     # - libshp
+    - shapelib
     - libgdal
     - libspatialite
     - geotiff
@@ -102,6 +106,7 @@ requirements:
     - sqlite
     - openssl
     - zlib
+    - libzlib
     # - openblas-devel
     - jsoncpp 
     - fftw
@@ -123,23 +128,24 @@ requirements:
     # - libssl 
     # - libshp 
     # - uthash 
-    - libopenblas 
+    #- libopenblas 
+    - shapelib
     - jsoncpp 
     - gdal 
     - libnetcdf 
     - proj 
     - xarray
+    - openblas
     - boost
     # - fann
     - fann2
     - libgdal
     - libspatialite
-    - geotiff
     - gsl
-    - proj
     - sqlite
     - openssl
     - zlib
+    - libzlib
     - fftw
     # - openblas-devel
 

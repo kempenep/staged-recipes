@@ -2,34 +2,46 @@
 
 set -ex # Abort on error.
 
-curl -L --output mial.tar.gz https://github.com/ec-jrc/jeolib-miallib/archive/refs/tags/v1.1.0.tar.gz
+# uthash
+
+curl -L --proxy http://proxy.cidsn.jrc.it:8888/ --output uthash.tar.gz https://github.com/troydhanson/uthash/archive/refs/heads/master.tar.gz
+
+tar xzvf uthash.tar.gz
+cd uthash-*
+for file in src/*.h;do cp $file $PREFIX/include/$(basename $file);done
+cd ..
+
+curl -L --proxy http://proxy.cidsn.jrc.it:8888/ --output mial.tar.gz https://github.com/ec-jrc/jeolib-miallib/archive/refs/tags/v1.1.0.tar.gz
 
 #- mial
+
 tar xzvf mial.tar.gz
 cd jeolib-miallib*
+#test
+cp /storage/kempepi/repositories/jeolib-miallib/CMakeLists.txt .
 mkdir build
 cd build
-cmake ..
+ls $PREFIX/include/zlib.h
+cmake -DCMAKE_PREFIX_PATH=$PREFIX -DCMAKE_INSTALL_PREFIX=$PREFIX ..
 make
-sudo make install
-sudo ldconfig
+make install
 cd ../..
 
-curl -L --output jiplib.tar.gz https://github.com/ec-jrc/jeolib-jiplib/archive/refs/tags/v1.1.1.tar.gz
+curl -L --proxy http://proxy.cidsn.jrc.it:8888/ --output jiplib.tar.gz https://github.com/ec-jrc/jeolib-jiplib/archive/refs/tags/v1.1.1.tar.gz
 
 # - jiplib
-set -xe
+
 tar xzvf jiplib.tar.gz
 cd jeolib-jiplib*
 mkdir build
 cd build
-cmake ..
+#cmake -DCMAKE_PREFIX_PATH=$PREFIX ..
+cmake -DMIAL_INCLUDE_DIR=$PREFIX/include/miallib -DMIAL_LIBRARY=$PREFIX/lib/libmiallib.so -DCMAKE_INSTALL_PREFIX=$PREFIX -DPYTHON_INSTALL_DIR=$PREFIX ..
 make
-sudo make install
-sudo ldconfig
+make install
 cd ../..
 
-curl -L --output pyjeo.tar.gz https://github.com/ec-jrc/jeolib-pyjeo/archive/refs/tags/v1.1.2.tar.gz
+curl -L --proxy http://proxy.cidsn.jrc.it:8888/ --output pyjeo.tar.gz https://github.com/ec-jrc/jeolib-pyjeo/archive/refs/tags/v1.1.2.tar.gz
 
 # - pyjeo
 tar xzvf pyjeo.tar.gz
